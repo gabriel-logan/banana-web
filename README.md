@@ -4,9 +4,9 @@ Frontend — React + Vite + TypeScript.
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `VITE_AUTH_API_URL` | Auth API base URL |
+| Variable                    | Description               |
+| --------------------------- | ------------------------- |
+| `VITE_AUTH_API_URL`         | Auth API base URL         |
 | `VITE_RESERVATIONS_API_URL` | Reservations API base URL |
 
 ## Run with Docker

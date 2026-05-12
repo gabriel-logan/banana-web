@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ReservationFormPage } from "./pages/ReservationFormPage";
 import { ReservationListPage } from "./pages/ReservationListPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 export function Router() {
   return (
@@ -20,6 +21,7 @@ export function Router() {
             path="/reservations/:id/edit"
             element={<ReservationFormPage />}
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
