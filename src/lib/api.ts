@@ -29,11 +29,11 @@ reservationsHttp.interceptors.request.use((config) => {
 
 export const authApi = {
   login: (payload: LoginRequest) =>
-    authHttp.post<AuthResponse>("/api/auth/login", payload).then((r) => r.data),
+    authHttp.post<AuthResponse>("/auth/login", payload).then((r) => r.data),
 
   register: (payload: RegisterRequest) =>
     authHttp
-      .post<AuthResponse>("/api/auth/register", payload)
+      .post<AuthResponse>("/auth/register", payload)
       .then((r) => r.data),
 };
 
