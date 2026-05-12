@@ -1,5 +1,5 @@
 import { type FormEvent, useMemo, useState } from "react";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiEdit3 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 
@@ -190,6 +190,9 @@ export function ReservationFormPage() {
             Back to list
           </Button>
           <div>
+            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-2xl text-slate-900 shadow-[0_16px_35px_rgba(247,201,72,0.3)]">
+              {isEditing ? <FiEdit3 /> : <FiCalendar />}
+            </div>
             <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
               {pageTitle}
             </h1>

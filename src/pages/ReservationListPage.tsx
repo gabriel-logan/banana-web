@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import {
+  FiAlertCircle,
+  FiCalendar,
+  FiFolderPlus,
+  FiPlus,
+} from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -77,10 +82,16 @@ export function ReservationListPage() {
           </div>
         ) : isError ? (
           <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-            {handleApiError(error)}
+            <div className="flex items-start gap-3">
+              <FiAlertCircle className="mt-0.5 shrink-0 text-lg" />
+              <span>{handleApiError(error)}</span>
+            </div>
           </div>
         ) : reservations.length === 0 ? (
           <div className="rounded-[28px] border border-dashed border-[var(--banana-stroke)] bg-white/65 p-10 text-center shadow-[0_24px_60px_rgba(148,163,184,0.08)]">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-2xl text-[var(--banana-amber)]">
+              <FiCalendar />
+            </div>
             <h2 className="text-xl font-semibold text-slate-900">
               No reservations yet
             </h2>
@@ -92,7 +103,7 @@ export function ReservationListPage() {
                 onClick={() => navigate("/reservations/new")}
                 variant="secondary"
               >
-                <FiPlus />
+                <FiFolderPlus />
                 Create first reservation
               </Button>
             </div>

@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import { FiCalendar, FiLock, FiMail, FiShield, FiZap } from "react-icons/fi";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -51,6 +52,9 @@ export function LoginPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white">
+              <FiShield />
+            </div>
             <p className="text-sm font-semibold text-slate-900">
               Protected reservation flow
             </p>
@@ -60,6 +64,9 @@ export function LoginPage() {
             </p>
           </div>
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-slate-900">
+              <FiZap />
+            </div>
             <p className="text-sm font-semibold text-slate-900">
               Conflict-aware scheduling
             </p>
@@ -87,6 +94,7 @@ export function LoginPage() {
           <Input
             autoComplete="email"
             error={errors.email}
+            hint="Use the same email registered in the auth service."
             label="Email"
             name="email"
             onChange={(e) => setEmail(e.target.value)}
@@ -97,6 +105,7 @@ export function LoginPage() {
           <Input
             autoComplete="current-password"
             error={errors.password}
+            hint="Your access token will be issued after a successful sign-in."
             label="Password"
             name="password"
             onChange={(e) => setPassword(e.target.value)}
@@ -110,6 +119,7 @@ export function LoginPage() {
             type="submit"
             variant="secondary"
           >
+            {loginMutation.isPending ? <FiCalendar /> : <FiLock />}
             {loginMutation.isPending ? "Signing in..." : "Sign in"}
           </Button>
         </form>
@@ -122,6 +132,16 @@ export function LoginPage() {
             Create an account
           </Link>
         </p>
+        <div className="mt-6 flex flex-wrap gap-3 text-xs text-slate-500">
+          <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2">
+            <FiMail />
+            Auth via email
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2">
+            <FiCalendar />
+            Reservation-ready access
+          </span>
+        </div>
       </section>
     </div>
   );

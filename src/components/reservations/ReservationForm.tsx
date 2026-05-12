@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { FiCoffee, FiFileText, FiMessageSquare } from "react-icons/fi";
 
 import type { Branch } from "../../types/branch.types";
 import type { CreateReservationRequest } from "../../types/reservation.types";
@@ -36,6 +37,7 @@ export function ReservationForm({
       <div className="grid gap-6 lg:grid-cols-2">
         <Select
           error={errors.branchId}
+          hint="Choose the branch where the meeting will happen."
           label="Branch"
           name="branchId"
           onChange={(e) => onChange("branchId", Number(e.target.value) || null)}
@@ -60,6 +62,7 @@ export function ReservationForm({
         />
         <Input
           error={errors.startTime}
+          hint="Pick the exact start date and time."
           label="Start time"
           name="startTime"
           onChange={(e) => onChange("startTime", e.target.value)}
@@ -68,6 +71,7 @@ export function ReservationForm({
         />
         <Input
           error={errors.endTime}
+          hint="The end time must be after the start time."
           label="End time"
           name="endTime"
           onChange={(e) => onChange("endTime", e.target.value)}
@@ -78,6 +82,7 @@ export function ReservationForm({
 
       <Input
         error={errors.responsible}
+        hint="Main owner of this reservation."
         label="Responsible"
         name="responsible"
         onChange={(e) => onChange("responsible", e.target.value)}
@@ -94,11 +99,13 @@ export function ReservationForm({
             onChange={(e) => onChange("coffee", e.target.checked)}
             type="checkbox"
           />
+          <FiCoffee className="text-[var(--banana-amber)]" />
           Include coffee service
         </label>
         <Input
           disabled={!values.coffee}
           error={errors.peopleQuantity}
+          hint="Required only when coffee service is enabled."
           label="People quantity"
           name="peopleQuantity"
           onChange={(e) =>
@@ -128,6 +135,7 @@ export function ReservationForm({
           type="submit"
           variant="secondary"
         >
+          {isEditing ? <FiFileText /> : <FiMessageSquare />}
           {isSubmitting
             ? "Saving..."
             : isEditing

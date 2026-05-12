@@ -1,4 +1,11 @@
 import { type FormEvent, useState } from "react";
+import {
+  FiKey,
+  FiMail,
+  FiMonitor,
+  FiSmartphone,
+  FiUserPlus,
+} from "react-icons/fi";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -53,6 +60,7 @@ export function RegisterPage() {
           <Input
             autoComplete="email"
             error={errors.email}
+            hint="Prefer your work email for easier team identification."
             label="Email"
             name="email"
             onChange={(e) => setEmail(e.target.value)}
@@ -77,6 +85,7 @@ export function RegisterPage() {
             type="submit"
             variant="secondary"
           >
+            {registerMutation.isPending ? <FiKey /> : <FiUserPlus />}
             {registerMutation.isPending ? "Creating..." : "Create account"}
           </Button>
         </form>
@@ -101,6 +110,9 @@ export function RegisterPage() {
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-slate-900">
+              <FiMonitor />
+            </div>
             <p className="text-sm font-semibold text-slate-900">
               In-memory session
             </p>
@@ -109,6 +121,9 @@ export function RegisterPage() {
             </p>
           </div>
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-[var(--banana-leaf)]">
+              <FiSmartphone />
+            </div>
             <p className="text-sm font-semibold text-slate-900">
               Responsive booking flow
             </p>
@@ -116,6 +131,16 @@ export function RegisterPage() {
               Manage reservations comfortably on desktop or mobile.
             </p>
           </div>
+        </div>
+        <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-2">
+            <FiMail />
+            Email-based sign-up
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-2">
+            <FiKey />
+            Shared JWT secret flow
+          </span>
         </div>
       </section>
     </div>
