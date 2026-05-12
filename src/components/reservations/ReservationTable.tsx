@@ -1,6 +1,7 @@
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 import type { Reservation } from "../../types/reservation.types";
+import { formatDate } from "../../utils/formatDate";
 import { Button } from "../ui/Button";
 import { Table } from "../ui/Table";
 
@@ -30,19 +31,19 @@ export function ReservationTable({
     id: String(r.id),
     branchName: r.branchName,
     roomName: r.roomName,
-    startTime: new Date(r.startTime).toLocaleString("pt-BR"),
-    endTime: new Date(r.endTime).toLocaleString("pt-BR"),
+    startTime: formatDate(r.startTime),
+    endTime: formatDate(r.endTime),
     responsible: r.responsible,
     description: r.description ?? "-",
     actions: (
-      <>
-        <Button onClick={() => onEdit(r.id)}>
+      <div className="flex gap-2">
+        <Button onClick={() => onEdit(r.id)} variant="ghost">
           <FiEdit />
         </Button>
-        <Button onClick={() => onDelete(r.id)}>
+        <Button onClick={() => onDelete(r.id)} variant="ghost">
           <FiTrash2 />
         </Button>
-      </>
+      </div>
     ),
   }));
 

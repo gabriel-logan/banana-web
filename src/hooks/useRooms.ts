@@ -4,9 +4,9 @@ import { roomsApi } from "../lib/api";
 
 const ROOMS_KEY = "rooms";
 
-export function useRooms() {
+export function useRooms(branchId?: number) {
   return useQuery({
-    queryKey: [ROOMS_KEY],
-    queryFn: roomsApi.getAll,
+    queryKey: [ROOMS_KEY, branchId ?? "all"],
+    queryFn: () => roomsApi.getAll(branchId),
   });
 }

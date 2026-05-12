@@ -1,15 +1,128 @@
+import { type FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
+
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { useLogin } from "../hooks/useAuth";
+import { handleApiError } from "../utils/handleApiError";
+import { validateLogin } from "../validators/auth.validator";
 
 export function LoginPage() {
+  const navigate = useNavigate();
+  const loginMutation = useLogin();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const nextErrors = validateLogin(email, password);
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    try {
+      await loginMutation.mutateAsync({ email, password });
+      toast.success("Welcome back.");
+      navigate("/reservations");
+    } catch (error) {
+      toast.error(handleApiError(error));
+    }
+  }
+
   return (
-    <div>
-      <h1>Login</h1>
-      <form>
-        <Input label="Email" name="email" type="email" />
-        <Input label="Password" name="password" type="password" />
-        <Button type="submit">Login</Button>
-      </form>
+    <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="space-y-6">
+        <div className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold tracking-[0.22em] text-[var(--banana-leaf)] uppercase">
+          Shared workspace booking
+        </div>
+        <div className="space-y-4">
+          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+            Reserve the right room before the meeting starts.
+          </h1>
+          <p className="max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
+            Sign in to manage reservations across branches, keep schedules tidy,
+            and avoid overlapping bookings.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <p className="text-sm font-semibold text-slate-900">
+              Protected reservation flow
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Access is guarded by the auth service and every reservation call
+              uses the issued JWT.
+            </p>
+          </div>
+          <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
+            <p className="text-sm font-semibold text-slate-900">
+              Conflict-aware scheduling
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              The reservations API blocks overlapping bookings in the same room
+              and branch.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[32px] border border-white/60 bg-white/85 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-8">
+        <div className="mb-8 space-y-2">
+          <p className="text-sm font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
+            Sign in
+          </p>
+          <h2 className="text-3xl font-semibold text-slate-900">
+            Welcome back
+          </h2>
+          <p className="text-sm text-slate-500">
+            Use your account to continue to the reservations dashboard.
+          </p>
+        </div>
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <Input
+            autoComplete="email"
+            error={errors.email}
+            label="Email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@company.com"
+            type="email"
+            value={email}
+          />
+          <Input
+            autoComplete="current-password"
+            error={errors.password}
+            label="Password"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Your password"
+            type="password"
+            value={password}
+          />
+          <Button
+            className="w-full"
+            disabled={loginMutation.isPending}
+            type="submit"
+            variant="secondary"
+          >
+            {loginMutation.isPending ? "Signing in..." : "Sign in"}
+          </Button>
+        </form>
+        <p className="mt-6 text-sm text-slate-500">
+          New here?{" "}
+          <Link
+            className="font-semibold text-[var(--banana-leaf)]"
+            to="/register"
+          >
+            Create an account
+          </Link>
+        </p>
+      </section>
     </div>
   );
 }

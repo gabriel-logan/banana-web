@@ -1,6 +1,7 @@
 import type { FormEvent } from "react";
 
 import type { Branch } from "../../types/branch.types";
+import type { CreateReservationRequest } from "../../types/reservation.types";
 import type { Room } from "../../types/room.types";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -9,59 +10,131 @@ import { Select } from "../ui/Select";
 interface ReservationFormProps {
   branches: Branch[];
   rooms: Room[];
+  values: CreateReservationRequest;
   errors: Record<string, string>;
+  isSubmitting: boolean;
+  isEditing: boolean;
+  onChange: (
+    field: keyof CreateReservationRequest,
+    value: string | number | boolean | null,
+  ) => void;
   onSubmit: (e: FormEvent) => void;
 }
 
 export function ReservationForm({
   branches,
   rooms,
+  values,
   errors,
+  isSubmitting,
+  isEditing,
+  onChange,
   onSubmit,
 }: ReservationFormProps) {
   return (
-    <form onSubmit={onSubmit}>
-      <Select
-        label="Branch"
-        name="branchId"
-        options={branches.map((b) => ({ value: b.id, label: b.name }))}
-        error={errors.branchId}
-      />
-      <Select
-        label="Room"
-        name="roomId"
-        options={rooms.map((r) => ({ value: r.id, label: r.name }))}
-        error={errors.roomId}
-      />
+    <form className="grid gap-6" onSubmit={onSubmit}>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Select
+          error={errors.branchId}
+          label="Branch"
+          name="branchId"
+          onChange={(e) => onChange("branchId", Number(e.target.value) || null)}
+          options={branches.map((branch) => ({
+            value: branch.id,
+            label: branch.name,
+          }))}
+          value={values.branchId || ""}
+        />
+        <Select
+          error={errors.roomId}
+          hint={
+            values.branchId
+              ? `${rooms.length} room(s) available in this branch`
+              : "Select a branch first"
+          }
+          label="Room"
+          name="roomId"
+          onChange={(e) => onChange("roomId", Number(e.target.value) || null)}
+          options={rooms.map((room) => ({ value: room.id, label: room.name }))}
+          value={values.roomId || ""}
+        />
+        <Input
+          error={errors.startTime}
+          label="Start time"
+          name="startTime"
+          onChange={(e) => onChange("startTime", e.target.value)}
+          type="datetime-local"
+          value={values.startTime}
+        />
+        <Input
+          error={errors.endTime}
+          label="End time"
+          name="endTime"
+          onChange={(e) => onChange("endTime", e.target.value)}
+          type="datetime-local"
+          value={values.endTime}
+        />
+      </div>
+
       <Input
-        label="Start Time"
-        name="startTime"
-        type="datetime-local"
-        error={errors.startTime}
-      />
-      <Input
-        label="End Time"
-        name="endTime"
-        type="datetime-local"
-        error={errors.endTime}
-      />
-      <Input
+        error={errors.responsible}
         label="Responsible"
         name="responsible"
-        error={errors.responsible}
+        onChange={(e) => onChange("responsible", e.target.value)}
+        placeholder="Who will host the meeting?"
+        value={values.responsible}
       />
-      <label>
-        <input type="checkbox" name="coffee" />
-        Coffee
-      </label>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <label className="flex items-center gap-3 rounded-2xl border border-[var(--banana-stroke)] bg-white/80 px-4 py-3 text-sm font-medium text-slate-700">
+          <input
+            checked={values.coffee}
+            className="h-4 w-4 rounded border-[var(--banana-stroke)] text-[var(--banana-amber)]"
+            name="coffee"
+            onChange={(e) => onChange("coffee", e.target.checked)}
+            type="checkbox"
+          />
+          Include coffee service
+        </label>
+        <Input
+          disabled={!values.coffee}
+          error={errors.peopleQuantity}
+          label="People quantity"
+          name="peopleQuantity"
+          onChange={(e) =>
+            onChange(
+              "peopleQuantity",
+              e.target.value ? Number(e.target.value) : null,
+            )
+          }
+          type="number"
+          value={values.peopleQuantity ?? ""}
+        />
+      </div>
+
       <Input
-        label="People Quantity"
-        name="peopleQuantity"
-        type="number"
-        error={errors.peopleQuantity}
+        hint="Optional note about the meeting."
+        label="Description"
+        name="description"
+        onChange={(e) => onChange("description", e.target.value)}
+        placeholder="Sprint review, board meeting, client presentation..."
+        value={values.description ?? ""}
       />
-      <Input label="Description" name="description" />
-      <Button type="submit">Save</Button>
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <Button
+          className="min-w-40"
+          disabled={isSubmitting}
+          type="submit"
+          variant="secondary"
+        >
+          {isSubmitting
+            ? "Saving..."
+            : isEditing
+              ? "Update reservation"
+              : "Create reservation"}
+        </Button>
+      </div>
     </form>
   );
 }

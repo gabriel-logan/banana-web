@@ -16,11 +16,28 @@ export function DeleteReservationModal({
 }: DeleteReservationModalProps) {
   return (
     <Modal open={open} onClose={onClose}>
-      <FiAlertTriangle />
-      <h3>Delete Reservation</h3>
-      <p>Are you sure you want to delete this reservation?</p>
-      <Button onClick={onConfirm}>Confirm</Button>
-      <Button onClick={onClose}>Cancel</Button>
+      <div className="space-y-5">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
+          <FiAlertTriangle className="text-2xl" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-slate-900">
+            Delete reservation
+          </h3>
+          <p className="text-sm leading-6 text-slate-600">
+            This action cannot be undone. The selected reservation will be
+            permanently removed.
+          </p>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <Button onClick={onClose} variant="ghost">
+            Cancel
+          </Button>
+          <Button onClick={onConfirm} variant="danger">
+            Confirm delete
+          </Button>
+        </div>
+      </div>
     </Modal>
   );
 }

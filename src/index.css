@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
+:root {
+  color-scheme: light;
+  --banana-cream: #fff8ea;
+  --banana-sand: #f4e3b2;
+  --banana-gold: #f7c948;
+  --banana-amber: #f59e0b;
+  --banana-ink: #1f2937;
+  --banana-leaf: #2f6d4f;
+  --banana-mist: #f8fafc;
+  --banana-stroke: #e5dcc8;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(247, 201, 72, 0.28),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(47, 109, 79, 0.14),
+      transparent 28%
+    ),
+    linear-gradient(180deg, #fffdf7 0%, var(--banana-cream) 48%, #f7f1e3 100%);
+  color: var(--banana-ink);
+  font-family: "Sora", "Segoe UI", sans-serif;
+}
+
 button,
 a,
 select,
-input[type="checkbox"] {
+input[type="checkbox"],
+label[for] {
   cursor: pointer;
+}
+
+::selection {
+  background: rgba(247, 201, 72, 0.45);
 }

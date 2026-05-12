@@ -32,9 +32,7 @@ export const authApi = {
     authHttp.post<AuthResponse>("/auth/login", payload).then((r) => r.data),
 
   register: (payload: RegisterRequest) =>
-    authHttp
-      .post<AuthResponse>("/auth/register", payload)
-      .then((r) => r.data),
+    authHttp.post<AuthResponse>("/auth/register", payload).then((r) => r.data),
 };
 
 export const branchesApi = {
@@ -42,7 +40,12 @@ export const branchesApi = {
 };
 
 export const roomsApi = {
-  getAll: () => reservationsHttp.get<Room[]>("/rooms").then((r) => r.data),
+  getAll: (branchId?: number) =>
+    reservationsHttp
+      .get<Room[]>("/rooms", {
+        params: branchId ? { branch_id: branchId } : undefined,
+      })
+      .then((r) => r.data),
 };
 
 export const reservationsApi = {
