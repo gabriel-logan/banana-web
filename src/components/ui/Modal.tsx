@@ -1,10 +1,10 @@
-import type { ReactNode } from "react"
-import { motion, AnimatePresence } from "motion/react"
+import type { ReactNode } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface ModalProps {
-  open: boolean
-  onClose: () => void
-  children: ReactNode
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
 }
 
 export function Modal({ open, onClose, children }: ModalProps) {
@@ -28,5 +28,5 @@ export function Modal({ open, onClose, children }: ModalProps) {
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

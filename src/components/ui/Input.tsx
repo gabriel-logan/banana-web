@@ -1,8 +1,8 @@
-import type { InputHTMLAttributes } from "react"
+import type { InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
+  label?: string;
+  error?: string;
 }
 
 export function Input({ label, error, ...props }: InputProps) {
@@ -12,5 +12,5 @@ export function Input({ label, error, ...props }: InputProps) {
       <input {...props} />
       {error && <span>{error}</span>}
     </div>
-  )
+  );
 }

@@ -1,13 +1,16 @@
-import { Button } from "../components/ui/Button"
-import { ReservationTable } from "../components/reservations/ReservationTable"
-import { FiPlus } from "react-icons/fi"
+import { FiPlus } from "react-icons/fi";
+
+import { ReservationTable } from "../components/reservations/ReservationTable";
+import { Button } from "../components/ui/Button";
 
 export function ReservationListPage() {
   return (
     <div>
       <div>
         <h1>Reservations</h1>
-        <Button><FiPlus /> New Reservation</Button>
+        <Button>
+          <FiPlus /> New Reservation
+        </Button>
       </div>
       <ReservationTable
         reservations={[]}
@@ -15,5 +18,5 @@ export function ReservationListPage() {
         onDelete={(_id) => {}}
       />
     </div>
-  )
+  );
 }

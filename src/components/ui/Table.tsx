@@ -1,13 +1,13 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 interface Column {
-  key: string
-  header: string
+  key: string;
+  header: string;
 }
 
 interface TableProps {
-  columns: Column[]
-  data: Record<string, ReactNode>[]
+  columns: Column[];
+  data: Record<string, ReactNode>[];
 }
 
 export function Table({ columns, data }: TableProps) {
@@ -30,5 +30,5 @@ export function Table({ columns, data }: TableProps) {
         ))}
       </tbody>
     </table>
-  )
+  );
 }

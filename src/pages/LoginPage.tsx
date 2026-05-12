@@ -1,5 +1,5 @@
-import { Button } from "../components/ui/Button"
-import { Input } from "../components/ui/Input"
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 export function LoginPage() {
   return (
@@ -11,5 +11,5 @@ export function LoginPage() {
         <Button type="submit">Login</Button>
       </form>
     </div>
-  )
+  );
 }
