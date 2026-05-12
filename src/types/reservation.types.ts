@@ -11,6 +11,7 @@ export interface Reservation {
   peopleQuantity: number | null;
   description: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateReservationRequest {

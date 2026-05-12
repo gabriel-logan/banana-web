@@ -3,4 +3,5 @@ export interface Room {
   name: string;
   branchId: number;
   createdAt: string;
+  updatedAt: string;
 }

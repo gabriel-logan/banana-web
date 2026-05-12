@@ -9,7 +9,7 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (res) => setAuth(res.token, res.user),
+    onSuccess: (res) => setAuth(res.accessToken, res.user),
   });
 }
 
@@ -18,7 +18,7 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
-    onSuccess: (res) => setAuth(res.token, res.user),
+    onSuccess: (res) => setAuth(res.accessToken, res.user),
   });
 }
 
