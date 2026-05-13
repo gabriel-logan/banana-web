@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { authApi } from "../lib/api";
+import { queryClient } from "../lib/queryClient";
 import { useAuthStore } from "../stores/auth.store";
 import type { LoginRequest, RegisterRequest } from "../types/auth.types";
 
@@ -9,7 +10,10 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (res) => setSession(res),
+    onSuccess: (res) => {
+      queryClient.clear();
+      setSession(res);
+    },
   });
 }
 
@@ -18,7 +22,10 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
-    onSuccess: (res) => setSession(res),
+    onSuccess: (res) => {
+      queryClient.clear();
+      setSession(res);
+    },
   });
 }
 
@@ -27,5 +34,6 @@ export function useLogout() {
 
   return () => {
     logout();
+    queryClient.clear();
   };
 }
