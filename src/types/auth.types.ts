@@ -19,3 +19,7 @@ export interface AuthResponse {
   refreshToken: string;
   user: User;
 }
+
+export interface StoredSession extends AuthResponse {
+  expiresAt: number;
+}

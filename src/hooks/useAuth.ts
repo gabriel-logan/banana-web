@@ -5,20 +5,20 @@ import { useAuthStore } from "../stores/auth.store";
 import type { LoginRequest, RegisterRequest } from "../types/auth.types";
 
 export function useLogin() {
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const setSession = useAuthStore((s) => s.setSession);
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (res) => setAuth(res.accessToken, res.user),
+    onSuccess: (res) => setSession(res),
   });
 }
 
 export function useRegister() {
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const setSession = useAuthStore((s) => s.setSession);
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
-    onSuccess: (res) => setAuth(res.accessToken, res.user),
+    onSuccess: (res) => setSession(res),
   });
 }
 

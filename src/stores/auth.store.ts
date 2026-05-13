@@ -1,25 +1,102 @@
 import { create } from "zustand";
 
-import type { User } from "../types/auth.types";
+import { SESSION_TTL_MS } from "../constants";
+import type { AuthResponse, StoredSession, User } from "../types/auth.types";
+
+const STORAGE_KEY = "banana-web.auth.session";
 
 interface AuthState {
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  expiresAt: number | null;
   user: User | null;
   isAuthenticated: boolean;
-  setAuth: (token: string, user: User) => void;
+  setSession: (session: AuthResponse) => void;
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  token: null,
-  user: null,
-  isAuthenticated: false,
+function saveSession(session: StoredSession) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+}
 
-  setAuth: (token: string, user: User) => {
-    set({ token, user, isAuthenticated: true });
+function clearSession() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+function readStoredSession(): StoredSession | null {
+  const rawSession = localStorage.getItem(STORAGE_KEY);
+
+  if (!rawSession) {
+    return null;
+  }
+
+  try {
+    const parsedSession = JSON.parse(rawSession) as Partial<StoredSession>;
+
+    if (
+      typeof parsedSession.accessToken !== "string" ||
+      typeof parsedSession.refreshToken !== "string" ||
+      typeof parsedSession.expiresAt !== "number" ||
+      !parsedSession.user
+    ) {
+      clearSession();
+      return null;
+    }
+
+    return parsedSession as StoredSession;
+  } catch {
+    clearSession();
+    return null;
+  }
+}
+
+function toAuthenticatedState(session: StoredSession) {
+  return {
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+    expiresAt: session.expiresAt,
+    user: session.user,
+    isAuthenticated: true,
+  };
+}
+
+function getInitialState() {
+  const storedSession = readStoredSession();
+
+  if (!storedSession) {
+    return {
+      accessToken: null,
+      refreshToken: null,
+      expiresAt: null,
+      user: null,
+      isAuthenticated: false,
+    };
+  }
+
+  return toAuthenticatedState(storedSession);
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  ...getInitialState(),
+
+  setSession: (session: AuthResponse) => {
+    const nextSession: StoredSession = {
+      ...session,
+      expiresAt: Date.now() + SESSION_TTL_MS,
+    };
+
+    saveSession(nextSession);
+    set(toAuthenticatedState(nextSession));
   },
 
   logout: () => {
-    set({ token: null, user: null, isAuthenticated: false });
+    clearSession();
+    set({
+      accessToken: null,
+      refreshToken: null,
+      expiresAt: null,
+      user: null,
+      isAuthenticated: false,
+    });
   },
 }));
