@@ -1,3 +1,14 @@
+import en from "./utils/locales/en.json";
+import pt from "./utils/locales/pt.json";
+
+// i18n resources
+export const resources = {
+  en: { translation: en },
+  pt: { translation: pt },
+} as const;
+
+export const userStorageKey = "banana-web.user";
+
 export const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL as string;
 export const RESERVATIONS_API_URL = import.meta.env
   .VITE_RESERVATIONS_API_URL as string;
