@@ -32,6 +32,10 @@ For Docker:
 
 Copy `.env.example` to `.env`.
 
+```bash
+cp .env.example .env
+```
+
 | Variable                    | Description                                   |
 | --------------------------- | --------------------------------------------- |
 | `VITE_AUTH_API_URL`         | Base URL for the auth API                     |
@@ -63,3 +67,12 @@ The app will be available at `http://localhost:3000`.
 - `banana-auth-api` and `banana-reservations-api` must be running first
 - The two APIs must share the exact same `JWT_SECRET`
 - The frontend automatically refreshes the session using the refresh token flow
+
+## Future Improvements
+
+These are small improvements that would be interesting in a next iteration, but would add complexity beyond the current challenge scope:
+
+- Add frontend automated tests for login, registration, reservation creation and deletion feedback flows.
+- Improve session handling by consuming token expiration metadata directly from the auth API instead of relying on a local TTL strategy.
+- Add filtering and pagination controls in the reservations list for larger datasets.
+- Add more loading skeletons and optimistic UI behaviors for a smoother user experience during mutations.
