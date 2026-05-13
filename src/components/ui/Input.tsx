@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -9,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Input({ label, error, hint, ...props }: InputProps) {
+  const { t } = useTranslation();
   const isPasswordField = props.type === "password";
   const [showPassword, setShowPassword] = useState(false);
   const inputType =
@@ -35,7 +37,7 @@ export function Input({ label, error, hint, ...props }: InputProps) {
         />
         {isPasswordField && (
           <button
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? t("Hide password") : t("Show password")}
             className="absolute inset-y-0 right-3 flex items-center text-slate-500 transition hover:text-slate-800"
             onClick={() => setShowPassword((current) => !current)}
             tabIndex={-1}

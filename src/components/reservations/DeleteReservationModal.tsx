@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { FiAlertTriangle } from "react-icons/fi";
 
 import { Button } from "../ui/Button";
@@ -16,6 +17,7 @@ export function DeleteReservationModal({
   onClose,
   onConfirm,
 }: DeleteReservationModalProps) {
+  const { t } = useTranslation();
   const isBulkDelete = count > 1;
 
   return (
@@ -27,21 +29,26 @@ export function DeleteReservationModal({
         <div className="space-y-2">
           <h3 className="text-xl font-semibold text-slate-900">
             {isBulkDelete
-              ? "Delete selected reservations"
-              : "Delete reservation"}
+              ? t("Delete selected reservations")
+              : t("Delete reservation")}
           </h3>
           <p className="text-sm leading-6 text-slate-600">
             {isBulkDelete
-              ? `This action cannot be undone. The ${count} selected reservations will be permanently removed.`
-              : "This action cannot be undone. The selected reservation will be permanently removed."}
+              ? t(
+                  "This action cannot be undone. The {{count}} selected reservations will be permanently removed.",
+                  { count },
+                )
+              : t(
+                  "This action cannot be undone. The selected reservation will be permanently removed.",
+                )}
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <Button onClick={onClose} variant="ghost">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button onClick={onConfirm} variant="danger">
-            Confirm delete
+            {t("Confirm delete")}
           </Button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import type { SelectHTMLAttributes } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
@@ -8,6 +9,8 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export function Select({ label, options, error, hint, ...props }: SelectProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       {label && (
@@ -25,7 +28,7 @@ export function Select({ label, options, error, hint, ...props }: SelectProps) {
         id={props.id ?? props.name}
         {...props}
       >
-        <option value="">Select...</option>
+        <option value="">{t("Select...")}</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}

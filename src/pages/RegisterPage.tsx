@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FiKey,
   FiMail,
@@ -17,6 +18,7 @@ import { parseApiError } from "../utils/handleApiError";
 import { validateRegister } from "../validators/auth.validator";
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const registerMutation = useRegister();
   const [email, setEmail] = useState("");
@@ -65,7 +67,7 @@ export function RegisterPage() {
 
     try {
       await registerMutation.mutateAsync({ email: email.trim(), password });
-      toast.success("Account created successfully.");
+      toast.success(t("Account created successfully."));
       navigate("/reservations");
     } catch (error) {
       const parsedError = parseApiError(error);
@@ -79,39 +81,40 @@ export function RegisterPage() {
       <section className="order-2 rounded-[32px] border border-white/60 bg-white/85 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-8 lg:order-1">
         <div className="mb-8 space-y-2">
           <p className="text-sm font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
-            Create account
+            {t("Create account")}
           </p>
           <h1 className="text-3xl font-semibold text-slate-900">
-            Start booking rooms
+            {t("Start booking rooms")}
           </h1>
           <p className="text-sm text-slate-500">
-            Register with your work email to manage meeting spaces across the
-            company.
+            {t(
+              "Register with your work email to manage meeting spaces across the company.",
+            )}
           </p>
         </div>
         <form className="space-y-5" onSubmit={handleSubmit}>
           {submitError && (
-            <Alert title="Unable to create account">{submitError}</Alert>
+            <Alert title={t("Unable to create account")}>{submitError}</Alert>
           )}
           <Input
             autoComplete="email"
             error={errors.email}
-            hint="Prefer your work email for easier team identification."
-            label="Email"
+            hint={t("Prefer your work email for easier team identification.")}
+            label={t("Email")}
             name="email"
             onChange={(e) => handleEmailChange(e.target.value)}
-            placeholder="you@company.com"
+            placeholder={t("you@company.com")}
             type="email"
             value={email}
           />
           <Input
             autoComplete="new-password"
             error={errors.password}
-            hint="Use at least 6 characters."
-            label="Password"
+            hint={t("Use at least 6 characters.")}
+            label={t("Password")}
             name="password"
             onChange={(e) => handlePasswordChange(e.target.value)}
-            placeholder="Create a password"
+            placeholder={t("Create a password")}
             type="password"
             value={password}
           />
@@ -122,27 +125,30 @@ export function RegisterPage() {
             variant="secondary"
           >
             {registerMutation.isPending ? <FiKey /> : <FiUserPlus />}
-            {registerMutation.isPending ? "Creating..." : "Create account"}
+            {registerMutation.isPending
+              ? t("Creating...")
+              : t("Create account")}
           </Button>
         </form>
         <p className="mt-6 text-sm text-slate-500">
-          Already have an account?{" "}
+          {t("Already have an account?")}{" "}
           <Link className="font-semibold text-[var(--banana-leaf)]" to="/login">
-            Sign in
+            {t("Sign in")}
           </Link>
         </p>
       </section>
 
       <section className="order-1 space-y-5 lg:order-2">
         <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold tracking-[0.22em] text-[var(--banana-leaf)] uppercase">
-          Lightweight microservice architecture
+          {t("Lightweight microservice architecture")}
         </div>
         <h2 className="max-w-xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-          One sign-in, one JWT, all reservation actions unlocked.
+          {t("One sign-in, one JWT, all reservation actions unlocked.")}
         </h2>
         <p className="max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-          The auth service handles identity, while the reservations service
-          stays focused on rooms, branches, and conflict validation.
+          {t(
+            "The auth service handles identity, while the reservations service stays focused on rooms, branches, and conflict validation.",
+          )}
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
@@ -150,10 +156,12 @@ export function RegisterPage() {
               <FiMonitor />
             </div>
             <p className="text-sm font-semibold text-slate-900">
-              In-memory session
+              {t("In-memory session")}
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Auth state stays simple and local to the current app session.
+              {t(
+                "Auth state stays simple and local to the current app session.",
+              )}
             </p>
           </div>
           <div className="rounded-[26px] border border-white/60 bg-white/75 p-5 shadow-[0_22px_60px_rgba(148,163,184,0.14)]">
@@ -161,21 +169,21 @@ export function RegisterPage() {
               <FiSmartphone />
             </div>
             <p className="text-sm font-semibold text-slate-900">
-              Responsive booking flow
+              {t("Responsive booking flow")}
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Manage reservations comfortably on desktop or mobile.
+              {t("Manage reservations comfortably on desktop or mobile.")}
             </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3 text-xs text-slate-500">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-2">
             <FiMail />
-            Email-based sign-up
+            {t("Email-based sign-up")}
           </span>
           <span className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-2">
             <FiKey />
-            Shared JWT secret flow
+            {t("Shared JWT secret flow")}
           </span>
         </div>
       </section>

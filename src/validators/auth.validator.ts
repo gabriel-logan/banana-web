@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import validator from "multiform-validator";
 
 const MIN_PASSWORD_LENGTH = 6;
@@ -13,13 +14,18 @@ export function validateLogin(
   const errors: Record<string, string> = {};
   const normalizedEmail = normalizeEmail(email);
 
-  if (validator.isEmpty(normalizedEmail)) errors.email = "Email is required";
+  if (validator.isEmpty(normalizedEmail))
+    errors.email = i18next.t("Email is required");
   else if (!validator.isEmail(normalizedEmail))
-    errors.email = "Enter a valid email address";
+    errors.email = i18next.t("Enter a valid email address");
 
-  if (validator.isEmpty(password)) errors.password = "Password is required";
+  if (validator.isEmpty(password))
+    errors.password = i18next.t("Password is required");
   else if (password.length < MIN_PASSWORD_LENGTH) {
-    errors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
+    errors.password = i18next.t(
+      "Password must be at least {{count}} characters",
+      { count: MIN_PASSWORD_LENGTH },
+    );
   }
 
   return errors;

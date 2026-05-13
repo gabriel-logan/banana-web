@@ -6,9 +6,6 @@ import { useUserStore } from "../stores/userStore";
 
 const language = useUserStore.getState().locale;
 
-// eslint-disable-next-line no-console
-console.log("i18n language:", language);
-
 i18next.use(initReactI18next).init({
   resources,
 
@@ -19,4 +16,10 @@ i18next.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
+});
+
+useUserStore.subscribe((state) => {
+  if (i18next.language !== state.locale) {
+    void i18next.changeLanguage(state.locale);
+  }
 });

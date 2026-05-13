@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { FiCoffee, FiFileText, FiMessageSquare } from "react-icons/fi";
 
 import type { Branch } from "../../types/branch.types";
@@ -32,13 +33,15 @@ export function ReservationForm({
   onChange,
   onSubmit,
 }: ReservationFormProps) {
+  const { t } = useTranslation();
+
   return (
     <form className="grid gap-6" onSubmit={onSubmit}>
       <div className="grid gap-6 lg:grid-cols-2">
         <Select
           error={errors.branchId}
-          hint="Choose the branch where the meeting will happen."
-          label="Branch"
+          hint={t("Choose the branch where the meeting will happen.")}
+          label={t("Branch")}
           name="branchId"
           onChange={(e) => onChange("branchId", Number(e.target.value) || null)}
           options={branches.map((branch) => ({
@@ -52,10 +55,12 @@ export function ReservationForm({
           error={errors.roomId}
           hint={
             values.branchId
-              ? `${rooms.length} room(s) available in this branch`
-              : "Select a branch first"
+              ? t("{{count}} room(s) available in this branch", {
+                  count: rooms.length,
+                })
+              : t("Select a branch first")
           }
-          label="Room"
+          label={t("Room")}
           name="roomId"
           onChange={(e) => onChange("roomId", Number(e.target.value) || null)}
           options={rooms.map((room) => ({ value: room.id, label: room.name }))}
@@ -63,8 +68,8 @@ export function ReservationForm({
         />
         <Input
           error={errors.startTime}
-          hint="Pick the exact start date and time."
-          label="Start time"
+          hint={t("Pick the exact start date and time.")}
+          label={t("Start time")}
           name="startTime"
           onChange={(e) => onChange("startTime", e.target.value)}
           type="datetime-local"
@@ -72,8 +77,8 @@ export function ReservationForm({
         />
         <Input
           error={errors.endTime}
-          hint="The end time must be after the start time."
-          label="End time"
+          hint={t("The end time must be after the start time.")}
+          label={t("End time")}
           name="endTime"
           onChange={(e) => onChange("endTime", e.target.value)}
           type="datetime-local"
@@ -83,11 +88,11 @@ export function ReservationForm({
 
       <Input
         error={errors.responsible}
-        hint="Main owner of this reservation."
-        label="Responsible"
+        hint={t("Main owner of this reservation.")}
+        label={t("Responsible")}
         name="responsible"
         onChange={(e) => onChange("responsible", e.target.value)}
-        placeholder="Who will host the meeting?"
+        placeholder={t("Who will host the meeting?")}
         value={values.responsible}
       />
 
@@ -101,13 +106,13 @@ export function ReservationForm({
             type="checkbox"
           />
           <FiCoffee className="text-[var(--banana-amber)]" />
-          Include coffee service
+          {t("Include coffee service")}
         </label>
         <Input
           disabled={!values.coffee}
           error={errors.peopleQuantity}
-          hint="Required only when coffee service is enabled."
-          label="People quantity"
+          hint={t("Required only when coffee service is enabled.")}
+          label={t("People quantity")}
           min={1}
           name="peopleQuantity"
           onChange={(e) =>
@@ -122,11 +127,11 @@ export function ReservationForm({
       </div>
 
       <Input
-        hint="Optional note about the meeting."
-        label="Description"
+        hint={t("Optional note about the meeting.")}
+        label={t("Description")}
         name="description"
         onChange={(e) => onChange("description", e.target.value)}
-        placeholder="Sprint review, board meeting, client presentation..."
+        placeholder={t("Sprint review, board meeting, client presentation...")}
         value={values.description ?? ""}
       />
 
@@ -139,10 +144,10 @@ export function ReservationForm({
         >
           {isEditing ? <FiFileText /> : <FiMessageSquare />}
           {isSubmitting
-            ? "Saving..."
+            ? t("Saving...")
             : isEditing
-              ? "Update reservation"
-              : "Create reservation"}
+              ? t("Update reservation")
+              : t("Create reservation")}
         </Button>
       </div>
     </form>

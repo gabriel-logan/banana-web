@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FiCalendar,
   FiCheckSquare,
@@ -21,6 +22,7 @@ import {
 import { parseApiError } from "../utils/handleApiError";
 
 export function ReservationListPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     data: reservations = [],
@@ -54,7 +56,7 @@ export function ReservationListPage() {
     try {
       setPageError(null);
       await deleteReservation.mutateAsync(reservationToDelete);
-      toast.success("Reservation deleted.");
+      toast.success(t("Reservation deleted."));
       setReservationToDelete(null);
     } catch (mutationError) {
       setPageError(parseApiError(mutationError).message);
@@ -70,7 +72,9 @@ export function ReservationListPage() {
       setPageError(null);
       await deleteReservations.mutateAsync(activeSelectedReservationIds);
       toast.success(
-        `${activeSelectedReservationIds.length} reservation(s) deleted.`,
+        t("{{count}} reservation(s) deleted.", {
+          count: activeSelectedReservationIds.length,
+        }),
       );
       setSelectedReservationIds([]);
       setBulkDeleteOpen(false);
@@ -101,15 +105,16 @@ export function ReservationListPage() {
         <div className="flex flex-col gap-4 rounded-[30px] border border-white/60 bg-white/70 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <span className="inline-flex rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
-              Reservation hub
+              {t("Reservation hub")}
             </span>
             <div>
               <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-                Reservations
+                {t("Reservations")}
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                Review scheduled meetings, edit bookings, and keep room
-                allocation organized across every branch.
+                {t(
+                  "Review scheduled meetings, edit bookings, and keep room allocation organized across every branch.",
+                )}
               </p>
             </div>
           </div>
@@ -120,14 +125,14 @@ export function ReservationListPage() {
               variant="danger"
             >
               <FiTrash2 />
-              Delete selected
+              {t("Delete selected")}
             </Button>
             <Button
               onClick={() => navigate("/reservations/new")}
               variant="secondary"
             >
               <FiPlus />
-              New reservation
+              {t("New reservation")}
             </Button>
           </div>
         </div>
@@ -142,7 +147,7 @@ export function ReservationListPage() {
             ))}
           </div>
         ) : isError ? (
-          <Alert title="Unable to load reservations">
+          <Alert title={t("Unable to load reservations")}>
             {parseApiError(error).message}
           </Alert>
         ) : reservations.length === 0 ? (
@@ -151,10 +156,10 @@ export function ReservationListPage() {
               <FiCalendar />
             </div>
             <h2 className="text-xl font-semibold text-slate-900">
-              No reservations yet
+              {t("No reservations yet")}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-600">
-              Start by creating your first booking for a branch and room.
+              {t("Start by creating your first booking for a branch and room.")}
             </p>
             <div className="mt-6">
               <Button
@@ -162,14 +167,16 @@ export function ReservationListPage() {
                 variant="secondary"
               >
                 <FiFolderPlus />
-                Create first reservation
+                {t("Create first reservation")}
               </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
             {pageError && (
-              <Alert title="Unable to delete reservation">{pageError}</Alert>
+              <Alert title={t("Unable to delete reservation")}>
+                {pageError}
+              </Alert>
             )}
             <div className="flex flex-col gap-3 rounded-[24px] border border-[var(--banana-stroke)] bg-white/75 px-5 py-4 shadow-[0_20px_45px_rgba(148,163,184,0.1)] sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3 text-sm text-slate-600">
@@ -178,8 +185,10 @@ export function ReservationListPage() {
                 </div>
                 <span>
                   {activeSelectedReservationIds.length === 0
-                    ? "Select reservations to delete them in batch."
-                    : `${activeSelectedReservationIds.length} reservation(s) selected.`}
+                    ? t("Select reservations to delete them in batch.")
+                    : t("{{count}} reservation(s) selected.", {
+                        count: activeSelectedReservationIds.length,
+                      })}
                 </span>
               </div>
               {activeSelectedReservationIds.length > 0 && (
@@ -187,7 +196,7 @@ export function ReservationListPage() {
                   onClick={() => setSelectedReservationIds([])}
                   variant="ghost"
                 >
-                  Clear selection
+                  {t("Clear selection")}
                 </Button>
               )}
             </div>

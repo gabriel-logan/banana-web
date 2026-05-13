@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { FiHome } from "react-icons/fi";
 import { useNavigate } from "react-router";
 
 import { Button } from "../components/ui/Button";
 
 export function NotFoundPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -13,15 +15,17 @@ export function NotFoundPage() {
           404
         </div>
         <h1 className="text-3xl font-semibold text-slate-900">
-          Page not found
+          {t("Page not found")}
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
-          The page you requested does not exist or is no longer available.
+          {t(
+            "The page you requested does not exist or is no longer available.",
+          )}
         </p>
         <div className="mt-8 flex justify-center">
           <Button onClick={() => navigate("/")} variant="secondary">
             <FiHome />
-            Go home
+            {t("Go home")}
           </Button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { type FormEvent, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiArrowLeft, FiCalendar, FiEdit3 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
@@ -86,6 +87,7 @@ function ReservationEditor({
   initialValues,
   isEditing,
 }: ReservationEditorProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [values, setValues] = useState<CreateReservationRequest>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -167,10 +169,10 @@ function ReservationEditor({
           id: Number(id),
           data: { ...payload, id: Number(id) },
         });
-        toast.success("Reservation updated.");
+        toast.success(t("Reservation updated."));
       } else {
         await createReservation.mutateAsync(payload);
-        toast.success("Reservation created.");
+        toast.success(t("Reservation created."));
       }
 
       navigate("/reservations");
@@ -187,7 +189,7 @@ function ReservationEditor({
   return (
     <>
       {submitError && (
-        <Alert title="Unable to save reservation">{submitError}</Alert>
+        <Alert title={t("Unable to save reservation")}>{submitError}</Alert>
       )}
       <ReservationForm
         branches={branches}
@@ -201,7 +203,7 @@ function ReservationEditor({
       />
       {selectedBranchId && !roomsLoading && rooms.length === 0 && (
         <p className="mt-4 text-sm text-amber-700">
-          No rooms are available for the selected branch yet.
+          {t("No rooms are available for the selected branch yet.")}
         </p>
       )}
     </>
@@ -209,6 +211,7 @@ function ReservationEditor({
 }
 
 export function ReservationFormPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
@@ -221,7 +224,7 @@ export function ReservationFormPage() {
     () => toFormValues(reservation) ?? emptyForm,
     [reservation],
   );
-  const pageTitle = isEditing ? "Edit reservation" : "New reservation";
+  const pageTitle = isEditing ? t("Edit reservation") : t("New reservation");
   const isLoading = branchesLoading || (isEditing && reservationLoading);
 
   return (
@@ -230,7 +233,7 @@ export function ReservationFormPage() {
         <div className="space-y-3">
           <Button onClick={() => navigate("/reservations")} variant="ghost">
             <FiArrowLeft />
-            Back to list
+            {t("Back to list")}
           </Button>
           <div>
             <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-2xl text-slate-900 shadow-[0_16px_35px_rgba(247,201,72,0.3)]">
@@ -240,8 +243,9 @@ export function ReservationFormPage() {
               {pageTitle}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-              Choose the branch, room, time range, and meeting owner before
-              saving the reservation.
+              {t(
+                "Choose the branch, room, time range, and meeting owner before saving the reservation.",
+              )}
             </p>
           </div>
         </div>

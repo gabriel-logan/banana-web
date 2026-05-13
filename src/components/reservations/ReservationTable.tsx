@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 import type { Reservation } from "../../types/reservation.types";
@@ -22,6 +23,7 @@ export function ReservationTable({
   onToggleSelection,
   onToggleAll,
 }: ReservationTableProps) {
+  const { t } = useTranslation();
   const allSelected =
     reservations.length > 0 &&
     reservations.every((reservation) =>
@@ -35,8 +37,8 @@ export function ReservationTable({
         <input
           aria-label={
             allSelected
-              ? "Deselect all reservations"
-              : "Select all reservations"
+              ? t("Deselect all reservations")
+              : t("Select all reservations")
           }
           checked={allSelected}
           className="h-4 w-4 rounded border-[var(--banana-stroke)] text-[var(--banana-amber)]"
@@ -45,20 +47,22 @@ export function ReservationTable({
         />
       ),
     },
-    { key: "id", header: "ID" },
-    { key: "branchName", header: "Branch" },
-    { key: "roomName", header: "Room" },
-    { key: "startTime", header: "Start" },
-    { key: "endTime", header: "End" },
-    { key: "responsible", header: "Responsible" },
-    { key: "description", header: "Description" },
-    { key: "actions", header: "Actions" },
+    { key: "id", header: t("ID") },
+    { key: "branchName", header: t("Branch") },
+    { key: "roomName", header: t("Room") },
+    { key: "startTime", header: t("Start") },
+    { key: "endTime", header: t("End") },
+    { key: "responsible", header: t("Responsible") },
+    { key: "description", header: t("Description") },
+    { key: "actions", header: t("Actions") },
   ];
 
   const data = reservations.map((reservation) => ({
     selection: (
       <input
-        aria-label={`Select reservation ${reservation.id}`}
+        aria-label={t("Select reservation {{reservationId}}", {
+          reservationId: reservation.id,
+        })}
         checked={selectedReservationIds.includes(reservation.id)}
         className="h-4 w-4 rounded border-[var(--banana-stroke)] text-[var(--banana-amber)]"
         onChange={() => onToggleSelection(reservation.id)}
