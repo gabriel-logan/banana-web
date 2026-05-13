@@ -32,6 +32,20 @@ const emptyForm: CreateReservationRequest = {
   description: null,
 };
 
+const reservationFieldDependencies: Record<
+  keyof CreateReservationRequest,
+  (keyof CreateReservationRequest)[]
+> = {
+  branchId: ["branchId", "roomId"],
+  roomId: ["roomId"],
+  startTime: ["startTime", "endTime"],
+  endTime: ["startTime", "endTime"],
+  responsible: ["responsible"],
+  coffee: ["coffee", "peopleQuantity"],
+  peopleQuantity: ["peopleQuantity"],
+  description: [],
+};
+
 function toDatetimeLocal(value: string) {
   const date = new Date(value);
   const pad = (part: number) => String(part).padStart(2, "0");
@@ -86,6 +100,7 @@ function ReservationEditor({
     field: keyof CreateReservationRequest,
     value: string | number | boolean | null,
   ) {
+    setSubmitError(null);
     setValues((current) => {
       const next = { ...current, [field]: value };
 
@@ -100,6 +115,26 @@ function ReservationEditor({
       if (field === "description" && value === "") {
         next.description = null;
       }
+
+      const nextErrors = validateReservation({
+        ...next,
+        branchId: next.branchId || null,
+        roomId: next.roomId || null,
+      });
+
+      setErrors((currentErrors) => {
+        const updated = { ...currentErrors };
+
+        for (const dependentField of reservationFieldDependencies[field]) {
+          if (nextErrors[dependentField]) {
+            updated[dependentField] = nextErrors[dependentField];
+          } else {
+            delete updated[dependentField];
+          }
+        }
+
+        return updated;
+      });
 
       return next;
     });

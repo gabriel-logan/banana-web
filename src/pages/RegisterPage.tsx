@@ -24,6 +24,34 @@ export function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  function handleEmailChange(value: string) {
+    setEmail(value);
+    setSubmitError(null);
+    const nextErrors = validateRegister(value, password);
+    setErrors((current) => {
+      const updated = { ...current };
+
+      if (nextErrors.email) updated.email = nextErrors.email;
+      else delete updated.email;
+
+      return updated;
+    });
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value);
+    setSubmitError(null);
+    const nextErrors = validateRegister(email, value);
+    setErrors((current) => {
+      const updated = { ...current };
+
+      if (nextErrors.password) updated.password = nextErrors.password;
+      else delete updated.password;
+
+      return updated;
+    });
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -36,7 +64,7 @@ export function RegisterPage() {
     }
 
     try {
-      await registerMutation.mutateAsync({ email, password });
+      await registerMutation.mutateAsync({ email: email.trim(), password });
       toast.success("Account created successfully.");
       navigate("/reservations");
     } catch (error) {
@@ -71,7 +99,7 @@ export function RegisterPage() {
             hint="Prefer your work email for easier team identification."
             label="Email"
             name="email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="you@company.com"
             type="email"
             value={email}
@@ -82,7 +110,7 @@ export function RegisterPage() {
             hint="Use at least 6 characters."
             label="Password"
             name="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handlePasswordChange(e.target.value)}
             placeholder="Create a password"
             type="password"
             value={password}

@@ -48,6 +48,7 @@ export function ReservationForm({
           value={values.branchId || ""}
         />
         <Select
+          disabled={!values.branchId}
           error={errors.roomId}
           hint={
             values.branchId
@@ -107,6 +108,7 @@ export function ReservationForm({
           error={errors.peopleQuantity}
           hint="Required only when coffee service is enabled."
           label="People quantity"
+          min={1}
           name="peopleQuantity"
           onChange={(e) =>
             onChange(

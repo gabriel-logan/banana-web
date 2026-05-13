@@ -18,6 +18,34 @@ export function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  function handleEmailChange(value: string) {
+    setEmail(value);
+    setSubmitError(null);
+    const nextErrors = validateLogin(value, password);
+    setErrors((current) => {
+      const updated = { ...current };
+
+      if (nextErrors.email) updated.email = nextErrors.email;
+      else delete updated.email;
+
+      return updated;
+    });
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value);
+    setSubmitError(null);
+    const nextErrors = validateLogin(email, value);
+    setErrors((current) => {
+      const updated = { ...current };
+
+      if (nextErrors.password) updated.password = nextErrors.password;
+      else delete updated.password;
+
+      return updated;
+    });
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -30,7 +58,7 @@ export function LoginPage() {
     }
 
     try {
-      await loginMutation.mutateAsync({ email, password });
+      await loginMutation.mutateAsync({ email: email.trim(), password });
       toast.success("Welcome back.");
       navigate("/reservations");
     } catch (error) {
@@ -105,7 +133,7 @@ export function LoginPage() {
             hint="Use the same email registered in the auth service."
             label="Email"
             name="email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="you@company.com"
             type="email"
             value={email}
@@ -116,7 +144,7 @@ export function LoginPage() {
             hint="Your access token will be issued after a successful sign-in."
             label="Password"
             name="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handlePasswordChange(e.target.value)}
             placeholder="Your password"
             type="password"
             value={password}
