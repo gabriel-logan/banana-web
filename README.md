@@ -18,10 +18,14 @@ Frontend for Banana Meeting Rooms.
 
 ## Requirements
 
+For local development:
+
 - Node.js 22+
 - pnpm
 
-The frontend does not require Docker.
+For Docker:
+
+- Docker
 
 ## Environment Variables
 
@@ -35,12 +39,23 @@ Copy `.env.example` to `.env`.
 
 ## Run
 
+Option A: local development
+
 ```bash
 pnpm install
 pnpm dev
 ```
 
 The app will be available at `http://localhost:5173`.
+
+Option B: Docker
+
+```bash
+docker build -t banana-web .
+docker run --rm -p 3000:80 banana-web
+```
+
+The app will be available at `http://localhost:3000`.
 
 ## Notes
 
