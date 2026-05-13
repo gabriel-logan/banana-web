@@ -112,14 +112,44 @@ export const authApi = {
 };
 
 export const branchesApi = {
-  getAll: () => reservationsHttp.get<Branch[]>("/branches").then((r) => r.data),
+  getAll: (params?: {
+    startTime?: string;
+    endTime?: string;
+    ignoreReservationId?: number;
+  }) =>
+    reservationsHttp
+      .get<Branch[]>("/branches", {
+        params:
+          params?.startTime && params?.endTime
+            ? {
+                start_time: params.startTime,
+                end_time: params.endTime,
+                ignore_reservation_id: params.ignoreReservationId,
+              }
+            : undefined,
+      })
+      .then((r) => r.data),
 };
 
 export const roomsApi = {
-  getAll: (branchId?: number) =>
+  getAll: (params?: {
+    branchId?: number;
+    startTime?: string;
+    endTime?: string;
+    ignoreReservationId?: number;
+  }) =>
     reservationsHttp
       .get<Room[]>("/rooms", {
-        params: branchId ? { branch_id: branchId } : undefined,
+        params: {
+          ...(params?.branchId ? { branch_id: params.branchId } : {}),
+          ...(params?.startTime && params?.endTime
+            ? {
+                start_time: params.startTime,
+                end_time: params.endTime,
+                ignore_reservation_id: params.ignoreReservationId,
+              }
+            : {}),
+        },
       })
       .then((r) => r.data),
 };

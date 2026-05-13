@@ -14,7 +14,6 @@ import {
   useUpdateReservation,
 } from "../hooks/useReservations";
 import { useRooms } from "../hooks/useRooms";
-import type { Branch } from "../types/branch.types";
 import type {
   CreateReservationRequest,
   Reservation,
@@ -75,14 +74,12 @@ function toFormValues(
 }
 
 interface ReservationEditorProps {
-  branches: Branch[];
   id?: string;
   initialValues: CreateReservationRequest;
   isEditing: boolean;
 }
 
 function ReservationEditor({
-  branches,
   id,
   initialValues,
   isEditing,
@@ -93,10 +90,29 @@ function ReservationEditor({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const selectedBranchId = values.branchId || undefined;
-  const { data: rooms = [], isLoading: roomsLoading } =
-    useRooms(selectedBranchId);
+  const ignoreReservationId = isEditing && id ? Number(id) : undefined;
+  const hasValidTimeRange =
+    Boolean(values.startTime) &&
+    Boolean(values.endTime) &&
+    new Date(values.startTime) < new Date(values.endTime);
+  const { data: branches = [], isLoading: branchesLoading } = useBranches(
+    hasValidTimeRange ? values.startTime : undefined,
+    hasValidTimeRange ? values.endTime : undefined,
+    ignoreReservationId,
+  );
+  const { data: rooms = [], isLoading: roomsLoading } = useRooms(
+    selectedBranchId,
+    hasValidTimeRange ? values.startTime : undefined,
+    hasValidTimeRange ? values.endTime : undefined,
+    ignoreReservationId,
+  );
   const createReservation = useCreateReservation();
   const updateReservation = useUpdateReservation();
+  const branchIsAvailable =
+    !values.branchId ||
+    branches.some((branch) => branch.id === values.branchId);
+  const roomIsAvailable =
+    !values.roomId || rooms.some((room) => room.id === values.roomId);
 
   function handleChange(
     field: keyof CreateReservationRequest,
@@ -150,6 +166,19 @@ function ReservationEditor({
       branchId: values.branchId || null,
       roomId: values.roomId || null,
     });
+
+    if (hasValidTimeRange && !branchIsAvailable) {
+      nextErrors.branchId = t(
+        "Select an available branch for the chosen time range",
+      );
+    }
+
+    if (hasValidTimeRange && values.branchId && !roomIsAvailable) {
+      nextErrors.roomId = t(
+        "Select an available room for the chosen time range",
+      );
+    }
+
     setErrors(nextErrors);
     setSubmitError(null);
 
@@ -191,19 +220,44 @@ function ReservationEditor({
       {submitError && (
         <Alert title={t("Unable to save reservation")}>{submitError}</Alert>
       )}
+      {hasValidTimeRange && !branchesLoading && branches.length === 0 && (
+        <Alert title={t("No availability found")}>
+          {t("No branches have rooms available for the selected time range.")}
+        </Alert>
+      )}
+      {hasValidTimeRange && values.branchId && !branchIsAvailable && (
+        <Alert title={t("Branch no longer available")}>
+          {t(
+            "The selected branch does not have any available rooms for the chosen time range.",
+          )}
+        </Alert>
+      )}
       <ReservationForm
         branches={branches}
         errors={errors}
         isEditing={isEditing}
-        isSubmitting={isSubmitting}
+        isSubmitting={isSubmitting || branchesLoading}
         onChange={handleChange}
         onSubmit={handleSubmit}
         rooms={rooms}
         values={values}
       />
-      {selectedBranchId && !roomsLoading && rooms.length === 0 && (
+      {hasValidTimeRange &&
+        selectedBranchId &&
+        !roomsLoading &&
+        roomIsAvailable &&
+        rooms.length === 0 && (
+          <p className="mt-4 text-sm text-amber-700">
+            {t(
+              "No rooms are available for the selected branch in the chosen time range.",
+            )}
+          </p>
+        )}
+      {hasValidTimeRange && values.roomId && !roomIsAvailable && (
         <p className="mt-4 text-sm text-amber-700">
-          {t("No rooms are available for the selected branch yet.")}
+          {t(
+            "The selected room is no longer available for the chosen time range.",
+          )}
         </p>
       )}
     </>
@@ -215,7 +269,6 @@ export function ReservationFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
-  const { data: branches = [], isLoading: branchesLoading } = useBranches();
   const { data: reservation, isLoading: reservationLoading } = useReservation(
     id ?? "",
   );
@@ -225,7 +278,7 @@ export function ReservationFormPage() {
     [reservation],
   );
   const pageTitle = isEditing ? t("Edit reservation") : t("New reservation");
-  const isLoading = branchesLoading || (isEditing && reservationLoading);
+  const isLoading = isEditing && reservationLoading;
 
   return (
     <section className="space-y-8">
@@ -267,7 +320,6 @@ export function ReservationFormPage() {
           </div>
         ) : (
           <ReservationEditor
-            branches={branches}
             id={id}
             initialValues={initialValues}
             isEditing={isEditing}
