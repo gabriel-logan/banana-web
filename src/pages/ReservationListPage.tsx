@@ -1,21 +1,17 @@
 import { useState } from "react";
-import {
-  FiAlertCircle,
-  FiCalendar,
-  FiFolderPlus,
-  FiPlus,
-} from "react-icons/fi";
+import { FiCalendar, FiFolderPlus, FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 import { DeleteReservationModal } from "../components/reservations/DeleteReservationModal";
 import { ReservationTable } from "../components/reservations/ReservationTable";
+import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import {
   useDeleteReservation,
   useReservations,
 } from "../hooks/useReservations";
-import { handleApiError } from "../utils/handleApiError";
+import { parseApiError } from "../utils/handleApiError";
 
 export function ReservationListPage() {
   const navigate = useNavigate();
@@ -29,6 +25,7 @@ export function ReservationListPage() {
   const [reservationToDelete, setReservationToDelete] = useState<number | null>(
     null,
   );
+  const [pageError, setPageError] = useState<string | null>(null);
 
   async function confirmDelete() {
     if (reservationToDelete === null) {
@@ -36,11 +33,12 @@ export function ReservationListPage() {
     }
 
     try {
+      setPageError(null);
       await deleteReservation.mutateAsync(reservationToDelete);
       toast.success("Reservation deleted.");
       setReservationToDelete(null);
     } catch (mutationError) {
-      toast.error(handleApiError(mutationError));
+      setPageError(parseApiError(mutationError).message);
     }
   }
 
@@ -81,12 +79,9 @@ export function ReservationListPage() {
             ))}
           </div>
         ) : isError ? (
-          <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-            <div className="flex items-start gap-3">
-              <FiAlertCircle className="mt-0.5 shrink-0 text-lg" />
-              <span>{handleApiError(error)}</span>
-            </div>
-          </div>
+          <Alert title="Unable to load reservations">
+            {parseApiError(error).message}
+          </Alert>
         ) : reservations.length === 0 ? (
           <div className="rounded-[28px] border border-dashed border-[var(--banana-stroke)] bg-white/65 p-10 text-center shadow-[0_24px_60px_rgba(148,163,184,0.08)]">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-2xl text-[var(--banana-amber)]">
@@ -109,11 +104,16 @@ export function ReservationListPage() {
             </div>
           </div>
         ) : (
-          <ReservationTable
-            onDelete={(id) => setReservationToDelete(id)}
-            onEdit={(id) => navigate(`/reservations/${id}/edit`)}
-            reservations={reservations}
-          />
+          <div className="space-y-4">
+            {pageError && (
+              <Alert title="Unable to delete reservation">{pageError}</Alert>
+            )}
+            <ReservationTable
+              onDelete={(id) => setReservationToDelete(id)}
+              onEdit={(id) => navigate(`/reservations/${id}/edit`)}
+              reservations={reservations}
+            />
+          </div>
         )}
       </section>
 

@@ -3,10 +3,11 @@ import { FiCalendar, FiLock, FiMail, FiShield, FiZap } from "react-icons/fi";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
+import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { useLogin } from "../hooks/useAuth";
-import { handleApiError } from "../utils/handleApiError";
+import { parseApiError } from "../utils/handleApiError";
 import { validateLogin } from "../validators/auth.validator";
 
 export function LoginPage() {
@@ -15,12 +16,14 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors = validateLogin(email, password);
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -31,7 +34,9 @@ export function LoginPage() {
       toast.success("Welcome back.");
       navigate("/reservations");
     } catch (error) {
-      toast.error(handleApiError(error));
+      const parsedError = parseApiError(error);
+      setSubmitError(parsedError.message);
+      setErrors((current) => ({ ...current, ...parsedError.fieldErrors }));
     }
   }
 
@@ -91,6 +96,9 @@ export function LoginPage() {
           </p>
         </div>
         <form className="space-y-5" onSubmit={handleSubmit}>
+          {submitError && (
+            <Alert title="Unable to sign in">{submitError}</Alert>
+          )}
           <Input
             autoComplete="email"
             error={errors.email}

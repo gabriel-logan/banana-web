@@ -9,10 +9,11 @@ import {
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
+import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { useRegister } from "../hooks/useAuth";
-import { handleApiError } from "../utils/handleApiError";
+import { parseApiError } from "../utils/handleApiError";
 import { validateRegister } from "../validators/auth.validator";
 
 export function RegisterPage() {
@@ -21,12 +22,14 @@ export function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors = validateRegister(email, password);
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -37,7 +40,9 @@ export function RegisterPage() {
       toast.success("Account created successfully.");
       navigate("/reservations");
     } catch (error) {
-      toast.error(handleApiError(error));
+      const parsedError = parseApiError(error);
+      setSubmitError(parsedError.message);
+      setErrors((current) => ({ ...current, ...parsedError.fieldErrors }));
     }
   }
 
@@ -57,6 +62,9 @@ export function RegisterPage() {
           </p>
         </div>
         <form className="space-y-5" onSubmit={handleSubmit}>
+          {submitError && (
+            <Alert title="Unable to create account">{submitError}</Alert>
+          )}
           <Input
             autoComplete="email"
             error={errors.email}

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 
 import { ReservationForm } from "../components/reservations/ReservationForm";
+import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import { useBranches } from "../hooks/useBranches";
 import {
@@ -17,7 +18,7 @@ import type {
   CreateReservationRequest,
   Reservation,
 } from "../types/reservation.types";
-import { handleApiError } from "../utils/handleApiError";
+import { parseApiError } from "../utils/handleApiError";
 import { validateReservation } from "../validators/reservation.validator";
 
 const emptyForm: CreateReservationRequest = {
@@ -74,6 +75,7 @@ function ReservationEditor({
   const navigate = useNavigate();
   const [values, setValues] = useState<CreateReservationRequest>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const selectedBranchId = values.branchId || undefined;
   const { data: rooms = [], isLoading: roomsLoading } =
     useRooms(selectedBranchId);
@@ -112,6 +114,7 @@ function ReservationEditor({
       roomId: values.roomId || null,
     });
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -137,7 +140,9 @@ function ReservationEditor({
 
       navigate("/reservations");
     } catch (error) {
-      toast.error(handleApiError(error));
+      const parsedError = parseApiError(error);
+      setSubmitError(parsedError.message);
+      setErrors((current) => ({ ...current, ...parsedError.fieldErrors }));
     }
   }
 
@@ -146,6 +151,9 @@ function ReservationEditor({
 
   return (
     <>
+      {submitError && (
+        <Alert title="Unable to save reservation">{submitError}</Alert>
+      )}
       <ReservationForm
         branches={branches}
         errors={errors}
