@@ -10,11 +10,12 @@ Frontend for Banana Meeting Rooms.
 
 ## Tech Choices
 
-- **React + Vite + TypeScript** for a fast frontend setup
-- **Axios** for API calls
-- **TanStack Query** for server state
-- **Zustand** for auth and user preferences
-- **Tailwind CSS** for UI styling
+- **React + Vite + TypeScript** because the challenge requires React and TypeScript, and this combination gives a fast development experience with type safety and low setup friction. I chose Vite over older bundlers like Webpack because it is simpler and faster for a small-to-medium frontend, which helps deliver more time on product behavior instead of tool configuration.
+- **Axios** because the application needs explicit communication with two different backends, plus interceptors for attaching tokens and refreshing sessions. I chose it over using the native `fetch` API directly because Axios makes these cross-cutting concerns cleaner and more centralized without creating a large API abstraction layer.
+- **TanStack Query** because reservations, rooms and branches are server state and benefit from caching, invalidation and loading/error management. I chose it over managing everything manually with `useEffect` and local component state because that tends to duplicate request logic and makes mutation synchronization harder as the app grows.
+- **Zustand** because the frontend only needs lightweight global state for authentication and user preferences. I chose it over Redux because Redux would add more ceremony than value for this scope, and over storing everything in React Context because Zustand keeps shared state simpler and more ergonomic without extra provider nesting.
+- **Multiform Validator** because the forms in this project need explicit validation rules with good control over edge cases and invalid states. I chose it because it is a library I created myself with a focus on more aggressive validation scenarios and stricter input testing, which fit well for login, registration and reservation flows where inconsistent input should be caught early in the frontend.
+- **Tailwind CSS** because the UI needed to be delivered quickly while still allowing a custom visual identity. I chose it over component libraries like MUI or Ant Design because those would push the interface toward a more generic look, and over writing only handcrafted CSS because Tailwind speeds up composition while still leaving full control over layout and styling.
 
 ## Requirements
 
