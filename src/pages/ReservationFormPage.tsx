@@ -229,17 +229,21 @@ export function ReservationFormPage() {
 
   return (
     <section className="space-y-8">
-      <div className="flex flex-col gap-4 rounded-[30px] border border-white/60 bg-white/70 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-[26px] border border-white/60 bg-white/70 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:flex-row sm:items-center sm:justify-between sm:rounded-[30px] sm:p-6 sm:shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
         <div className="space-y-3">
-          <Button onClick={() => navigate("/reservations")} variant="ghost">
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => navigate("/reservations")}
+            variant="ghost"
+          >
             <FiArrowLeft />
             {t("Back to list")}
           </Button>
           <div>
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-2xl text-slate-900 shadow-[0_16px_35px_rgba(247,201,72,0.3)]">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--banana-gold)] text-xl text-slate-900 shadow-[0_14px_28px_rgba(247,201,72,0.28)] sm:h-14 sm:w-14 sm:text-2xl sm:shadow-[0_16px_35px_rgba(247,201,72,0.3)]">
               {isEditing ? <FiEdit3 /> : <FiCalendar />}
             </div>
-            <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+            <h1 className="text-2xl font-semibold text-slate-900 sm:text-4xl">
               {pageTitle}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
@@ -251,7 +255,7 @@ export function ReservationFormPage() {
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-white/60 bg-white/85 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.12)] sm:p-8">
+      <div className="rounded-[28px] border border-white/60 bg-white/85 p-5 shadow-[0_24px_60px_rgba(15,23,42,0.1)] sm:rounded-[32px] sm:p-8 sm:shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
         {isLoading ? (
           <div className="grid gap-5 lg:grid-cols-2">
             {Array.from({ length: 6 }).map((_, index) => (

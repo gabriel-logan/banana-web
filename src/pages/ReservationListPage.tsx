@@ -102,13 +102,13 @@ export function ReservationListPage() {
   return (
     <>
       <section className="space-y-8">
-        <div className="flex flex-col gap-4 rounded-[30px] border border-white/60 bg-white/70 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 rounded-[26px] border border-white/60 bg-white/70 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:flex-row sm:items-end sm:justify-between sm:rounded-[30px] sm:p-6 sm:shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
           <div className="space-y-3">
             <span className="inline-flex rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
               {t("Reservation hub")}
             </span>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+              <h1 className="text-2xl font-semibold text-slate-900 sm:text-4xl">
                 {t("Reservations")}
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
@@ -120,6 +120,7 @@ export function ReservationListPage() {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button
+              className="w-full sm:w-auto"
               disabled={activeSelectedReservationIds.length === 0}
               onClick={() => setBulkDeleteOpen(true)}
               variant="danger"
@@ -128,6 +129,7 @@ export function ReservationListPage() {
               {t("Delete selected")}
             </Button>
             <Button
+              className="w-full sm:w-auto"
               onClick={() => navigate("/reservations/new")}
               variant="secondary"
             >
@@ -178,7 +180,7 @@ export function ReservationListPage() {
                 {pageError}
               </Alert>
             )}
-            <div className="flex flex-col gap-3 rounded-[24px] border border-[var(--banana-stroke)] bg-white/75 px-5 py-4 shadow-[0_20px_45px_rgba(148,163,184,0.1)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-[22px] border border-[var(--banana-stroke)] bg-white/75 px-4 py-4 shadow-[0_16px_34px_rgba(148,163,184,0.1)] sm:flex-row sm:items-center sm:justify-between sm:rounded-[24px] sm:px-5 sm:shadow-[0_20px_45px_rgba(148,163,184,0.1)]">
               <div className="flex items-center gap-3 text-sm text-slate-600">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-[var(--banana-amber)]">
                   <FiCheckSquare />
@@ -193,6 +195,7 @@ export function ReservationListPage() {
               </div>
               {activeSelectedReservationIds.length > 0 && (
                 <Button
+                  className="w-full sm:w-auto"
                   onClick={() => setSelectedReservationIds([])}
                   variant="ghost"
                 >

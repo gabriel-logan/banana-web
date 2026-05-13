@@ -137,7 +137,7 @@ export function ReservationForm({
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
         <Button
-          className="min-w-40"
+          className="w-full sm:w-auto sm:min-w-40"
           disabled={isSubmitting}
           type="submit"
           variant="secondary"

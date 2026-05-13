@@ -71,13 +71,13 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="space-y-6">
+    <div className="mx-auto grid min-h-[calc(100vh-6.5rem)] max-w-6xl items-start gap-8 lg:min-h-[calc(100vh-8rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10">
+      <section className="order-2 space-y-5 lg:order-1 lg:space-y-6">
         <div className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold tracking-[0.22em] text-[var(--banana-leaf)] uppercase">
           {t("Shared workspace booking")}
         </div>
         <div className="space-y-4">
-          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="max-w-xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
             {t("Reserve the right room before the meeting starts.")}
           </h1>
           <p className="max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
@@ -116,7 +116,7 @@ export function LoginPage() {
         </div>
       </section>
 
-      <section className="rounded-[32px] border border-white/60 bg-white/85 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-8">
+      <section className="order-1 rounded-[28px] border border-white/60 bg-white/85 p-5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] sm:rounded-[32px] sm:p-8 lg:order-2 lg:shadow-[0_30px_80px_rgba(15,23,42,0.14)]">
         <div className="mb-8 space-y-2">
           <p className="text-sm font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
             {t("Sign in")}

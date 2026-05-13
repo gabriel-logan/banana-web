@@ -77,8 +77,8 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-      <section className="order-2 rounded-[32px] border border-white/60 bg-white/85 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-8 lg:order-1">
+    <div className="mx-auto grid min-h-[calc(100vh-6.5rem)] max-w-6xl items-start gap-8 lg:min-h-[calc(100vh-8rem)] lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-10">
+      <section className="order-1 rounded-[28px] border border-white/60 bg-white/85 p-5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] sm:rounded-[32px] sm:p-8 lg:order-1 lg:shadow-[0_30px_80px_rgba(15,23,42,0.14)]">
         <div className="mb-8 space-y-2">
           <p className="text-sm font-semibold tracking-[0.2em] text-[var(--banana-leaf)] uppercase">
             {t("Create account")}
@@ -138,11 +138,11 @@ export function RegisterPage() {
         </p>
       </section>
 
-      <section className="order-1 space-y-5 lg:order-2">
+      <section className="order-2 space-y-5 lg:order-2">
         <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold tracking-[0.22em] text-[var(--banana-leaf)] uppercase">
           {t("Lightweight microservice architecture")}
         </div>
-        <h2 className="max-w-xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+        <h2 className="max-w-xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
           {t("One sign-in, one JWT, all reservation actions unlocked.")}
         </h2>
         <p className="max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
