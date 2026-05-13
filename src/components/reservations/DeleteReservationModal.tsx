@@ -5,15 +5,19 @@ import { Modal } from "../ui/Modal";
 
 interface DeleteReservationModalProps {
   open: boolean;
+  count?: number;
   onClose: () => void;
   onConfirm: () => void;
 }
 
 export function DeleteReservationModal({
   open,
+  count = 1,
   onClose,
   onConfirm,
 }: DeleteReservationModalProps) {
+  const isBulkDelete = count > 1;
+
   return (
     <Modal open={open} onClose={onClose}>
       <div className="space-y-5">
@@ -22,11 +26,14 @@ export function DeleteReservationModal({
         </div>
         <div className="space-y-2">
           <h3 className="text-xl font-semibold text-slate-900">
-            Delete reservation
+            {isBulkDelete
+              ? "Delete selected reservations"
+              : "Delete reservation"}
           </h3>
           <p className="text-sm leading-6 text-slate-600">
-            This action cannot be undone. The selected reservation will be
-            permanently removed.
+            {isBulkDelete
+              ? `This action cannot be undone. The ${count} selected reservations will be permanently removed.`
+              : "This action cannot be undone. The selected reservation will be permanently removed."}
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">

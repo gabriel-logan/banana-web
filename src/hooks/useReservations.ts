@@ -53,3 +53,12 @@ export function useDeleteReservation() {
     onSuccess: () => qc.invalidateQueries({ queryKey: [RESERVATIONS_KEY] }),
   });
 }
+
+export function useDeleteReservations() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (reservationIds: number[]) =>
+      reservationsApi.removeMany(reservationIds),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [RESERVATIONS_KEY] }),
+  });
+}

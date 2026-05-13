@@ -1,5 +1,11 @@
-import { useState } from "react";
-import { FiCalendar, FiFolderPlus, FiPlus } from "react-icons/fi";
+import { useMemo, useState } from "react";
+import {
+  FiCalendar,
+  FiCheckSquare,
+  FiFolderPlus,
+  FiPlus,
+  FiTrash2,
+} from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -9,6 +15,7 @@ import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import {
   useDeleteReservation,
+  useDeleteReservations,
   useReservations,
 } from "../hooks/useReservations";
 import { parseApiError } from "../utils/handleApiError";
@@ -22,10 +29,22 @@ export function ReservationListPage() {
     error,
   } = useReservations();
   const deleteReservation = useDeleteReservation();
+  const deleteReservations = useDeleteReservations();
   const [reservationToDelete, setReservationToDelete] = useState<number | null>(
     null,
   );
+  const [selectedReservationIds, setSelectedReservationIds] = useState<
+    number[]
+  >([]);
   const [pageError, setPageError] = useState<string | null>(null);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const activeSelectedReservationIds = useMemo(
+    () =>
+      selectedReservationIds.filter((reservationId) =>
+        reservations.some((reservation) => reservation.id === reservationId),
+      ),
+    [reservations, selectedReservationIds],
+  );
 
   async function confirmDelete() {
     if (reservationToDelete === null) {
@@ -40,6 +59,40 @@ export function ReservationListPage() {
     } catch (mutationError) {
       setPageError(parseApiError(mutationError).message);
     }
+  }
+
+  async function confirmBulkDelete() {
+    if (activeSelectedReservationIds.length === 0) {
+      return;
+    }
+
+    try {
+      setPageError(null);
+      await deleteReservations.mutateAsync(activeSelectedReservationIds);
+      toast.success(
+        `${activeSelectedReservationIds.length} reservation(s) deleted.`,
+      );
+      setSelectedReservationIds([]);
+      setBulkDeleteOpen(false);
+    } catch (mutationError) {
+      setPageError(parseApiError(mutationError).message);
+    }
+  }
+
+  function toggleReservationSelection(reservationId: number) {
+    setSelectedReservationIds((current) =>
+      current.includes(reservationId)
+        ? current.filter((id) => id !== reservationId)
+        : [...current, reservationId],
+    );
+  }
+
+  function toggleAllReservations() {
+    setSelectedReservationIds((current) =>
+      current.length === reservations.length
+        ? []
+        : reservations.map((reservation) => reservation.id),
+    );
   }
 
   return (
@@ -60,13 +113,23 @@ export function ReservationListPage() {
               </p>
             </div>
           </div>
-          <Button
-            onClick={() => navigate("/reservations/new")}
-            variant="secondary"
-          >
-            <FiPlus />
-            New reservation
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button
+              disabled={activeSelectedReservationIds.length === 0}
+              onClick={() => setBulkDeleteOpen(true)}
+              variant="danger"
+            >
+              <FiTrash2 />
+              Delete selected
+            </Button>
+            <Button
+              onClick={() => navigate("/reservations/new")}
+              variant="secondary"
+            >
+              <FiPlus />
+              New reservation
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -108,19 +171,49 @@ export function ReservationListPage() {
             {pageError && (
               <Alert title="Unable to delete reservation">{pageError}</Alert>
             )}
+            <div className="flex flex-col gap-3 rounded-[24px] border border-[var(--banana-stroke)] bg-white/75 px-5 py-4 shadow-[0_20px_45px_rgba(148,163,184,0.1)] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3 text-sm text-slate-600">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-[var(--banana-amber)]">
+                  <FiCheckSquare />
+                </div>
+                <span>
+                  {activeSelectedReservationIds.length === 0
+                    ? "Select reservations to delete them in batch."
+                    : `${activeSelectedReservationIds.length} reservation(s) selected.`}
+                </span>
+              </div>
+              {activeSelectedReservationIds.length > 0 && (
+                <Button
+                  onClick={() => setSelectedReservationIds([])}
+                  variant="ghost"
+                >
+                  Clear selection
+                </Button>
+              )}
+            </div>
             <ReservationTable
               onDelete={(id) => setReservationToDelete(id)}
               onEdit={(id) => navigate(`/reservations/${id}/edit`)}
+              onToggleAll={toggleAllReservations}
+              onToggleSelection={toggleReservationSelection}
               reservations={reservations}
+              selectedReservationIds={activeSelectedReservationIds}
             />
           </div>
         )}
       </section>
 
       <DeleteReservationModal
+        count={1}
         onClose={() => setReservationToDelete(null)}
         onConfirm={confirmDelete}
         open={reservationToDelete !== null}
+      />
+      <DeleteReservationModal
+        count={activeSelectedReservationIds.length}
+        onClose={() => setBulkDeleteOpen(false)}
+        onConfirm={confirmBulkDelete}
+        open={bulkDeleteOpen}
       />
     </>
   );

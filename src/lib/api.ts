@@ -145,4 +145,9 @@ export const reservationsApi = {
 
   remove: (id: number) =>
     reservationsHttp.delete(`/reservations/${id}`).then(() => undefined),
+
+  removeMany: (reservationIds: number[]) =>
+    reservationsHttp
+      .post("/reservations/bulk-delete", { reservationIds })
+      .then(() => undefined),
 };
